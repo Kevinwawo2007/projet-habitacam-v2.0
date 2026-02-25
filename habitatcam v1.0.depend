@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1743445502 source:c:\users\lenovo\desktop\projet habitacam  v1.0\habitatcam v1.0\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1743445502 source:c:\users\lenovo\desktop\projet habitacam  v1.0\habitatcamv1.0\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1772019786 source:c:\users\lenovo\desktop\projet habitacam  v1.0\habitatcamv1.0\auth.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"Structure.h"
+	"auth.h"
+
+1771883299 c:\users\lenovo\desktop\projet habitacam  v1.0\habitatcamv1.0\structure.h
+
+1772019867 c:\users\lenovo\desktop\projet habitacam  v1.0\habitatcamv1.0\auth.h
+	"Structure.h"
+
