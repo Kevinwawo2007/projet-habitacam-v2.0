@@ -6,7 +6,7 @@
  * de la plateforme : utilisateurs, logements et statistiques.
  * Accessible uniquement aux comptes de role ROLE_ADMINISTRATEUR.
  *
- * @version 1.0
+ * @version  1.0
  * @date    2024-2025
  * @author  SOUOPGUI
  * ============================================================ */
