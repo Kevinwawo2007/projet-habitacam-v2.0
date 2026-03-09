@@ -27,8 +27,7 @@ Session     sessionCourante = {0};
 /**
  * @brief Vide le tampon du clavier apres un scanf().
  */
-static void viderBuffer()
-{
+static void viderBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
@@ -38,12 +37,10 @@ static void viderBuffer()
  * @param mdp    Tableau ou stocker le mot de passe.
  * @param taille Taille maximale du tableau.
  */
-static void saisirMotDePasse(char *mdp, int taille)
-{
+static void saisirMotDePasse(char *mdp, int taille) {
     int i = 0;
     char c;
-    while (i < taille - 1)
-    {
+    while (i < taille - 1) {
         c = getchar();
         if (c == '\n' || c == EOF) break;
         mdp[i++] = c;
@@ -59,10 +56,8 @@ static void saisirMotDePasse(char *mdp, int taille)
  * @param email Email a verifier.
  * @return 1 si existe, 0 sinon.
  */
-int emailExiste(const char *email)
-{
-    for (int i = 0; i < nbUtilisateurs; i++)
-    {
+int emailExiste(const char *email) {
+    for (int i = 0; i < nbUtilisateurs; i++) {
         if (strcmp(listeUtilisateurs[i].email, email) == 0)
             return 1;
     }
@@ -75,14 +70,11 @@ int emailExiste(const char *email)
  * @param mdp   Mot de passe saisi.
  * @return Index dans listeUtilisateurs si trouve, -1 sinon.
  */
-int rechercherUtilisateur(const char *email, const char *mdp)
-{
-    for (int i = 0; i < nbUtilisateurs; i++)
-    {
+int rechercherUtilisateur(const char *email, const char *mdp) {
+    for (int i = 0; i < nbUtilisateurs; i++) {
         if (strcmp(listeUtilisateurs[i].email, email) == 0 &&
-                strcmp(listeUtilisateurs[i].motDePasse, mdp) == 0 &&
-                listeUtilisateurs[i].actif == 1)
-        {
+            strcmp(listeUtilisateurs[i].motDePasse, mdp) == 0 &&
+            listeUtilisateurs[i].actif == 1) {
             return i;
         }
     }
@@ -93,11 +85,9 @@ int rechercherUtilisateur(const char *email, const char *mdp)
  * @brief Genere un ID unique pour un nouvel utilisateur.
  * @return Le plus grand ID existant + 1.
  */
-int genererIdUtilisateur()
-{
+int genererIdUtilisateur() {
     int maxId = 0;
-    for (int i = 0; i < nbUtilisateurs; i++)
-    {
+    for (int i = 0; i < nbUtilisateurs; i++) {
         if (listeUtilisateurs[i].id > maxId)
             maxId = listeUtilisateurs[i].id;
     }
@@ -115,11 +105,9 @@ int genererIdUtilisateur()
  * Si le fichier est absent, cree un admin par defaut :
  * Email : admin@habitatcam.cm / Mot de passe : admin123
  */
-void chargerUtilisateurs()
-{
+void chargerUtilisateurs() {
     FILE *f = fopen(FICHIER_UTILISATEURS, "r");
-    if (f == NULL)
-    {
+    if (f == NULL) {
         Utilisateur admin;
         admin.id = 1;
         strcpy(admin.nom,        "Admin");
@@ -141,8 +129,7 @@ void chargerUtilisateurs()
     while (fscanf(f, "%d|%49[^|]|%49[^|]|%79[^|]|%19[^|]|%49[^|]|%d|%d\n",
                   &u.id, u.nom, u.prenom, u.email,
                   u.telephone, u.motDePasse,
-                  (int*)&u.role, &u.actif) == 8)
-    {
+                  (int*)&u.role, &u.actif) == 8) {
         listeUtilisateurs[nbUtilisateurs++] = u;
         if (nbUtilisateurs >= MAX_UTILISATEURS) break;
     }
@@ -152,17 +139,14 @@ void chargerUtilisateurs()
 /**
  * @brief Sauvegarde tous les utilisateurs dans le fichier texte.
  */
-void sauvegarderUtilisateurs()
-{
+void sauvegarderUtilisateurs() {
     system("if not exist data mkdir data");
     FILE *f = fopen(FICHIER_UTILISATEURS, "w");
-    if (f == NULL)
-    {
+    if (f == NULL) {
         printf("[ERREUR] Impossible d'ouvrir le fichier utilisateurs.\n");
         return;
     }
-    for (int i = 0; i < nbUtilisateurs; i++)
-    {
+    for (int i = 0; i < nbUtilisateurs; i++) {
         Utilisateur *u = &listeUtilisateurs[i];
         fprintf(f, "%d|%s|%s|%s|%s|%s|%d|%d\n",
                 u->id, u->nom, u->prenom, u->email,
@@ -183,10 +167,8 @@ void sauvegarderUtilisateurs()
  * Saisit les informations, verifie l'unicite de l'email,
  * confirme le mot de passe et sauvegarde le compte.
  */
-void inscrireUtilisateur()
-{
-    if (nbUtilisateurs >= MAX_UTILISATEURS)
-    {
+void inscrireUtilisateur() {
+    if (nbUtilisateurs >= MAX_UTILISATEURS) {
         printf("[ERREUR] Nombre maximum d'utilisateurs atteint.\n");
         return;
     }
@@ -197,36 +179,25 @@ void inscrireUtilisateur()
 
     printf("\n[INSCRIPTION]\n");
 
-    printf("Nom        : ");
-    fgets(nouveau.nom,      TAILLE_NOM,   stdin);
-    nouveau.nom[strcspn(nouveau.nom, "\n")]           = '\0';
-    printf("Prenom     : ");
-    fgets(nouveau.prenom,   TAILLE_NOM,   stdin);
-    nouveau.prenom[strcspn(nouveau.prenom, "\n")]     = '\0';
-    printf("Email      : ");
-    fgets(nouveau.email,    TAILLE_EMAIL, stdin);
-    nouveau.email[strcspn(nouveau.email, "\n")]       = '\0';
+    printf("Nom        : "); fgets(nouveau.nom,      TAILLE_NOM,   stdin); nouveau.nom[strcspn(nouveau.nom, "\n")]           = '\0';
+    printf("Prenom     : "); fgets(nouveau.prenom,   TAILLE_NOM,   stdin); nouveau.prenom[strcspn(nouveau.prenom, "\n")]     = '\0';
+    printf("Email      : "); fgets(nouveau.email,    TAILLE_EMAIL, stdin); nouveau.email[strcspn(nouveau.email, "\n")]       = '\0';
 
-    if (emailExiste(nouveau.email))
-    {
+    if (emailExiste(nouveau.email)) {
         printf("[ERREUR] Cet email est deja utilise.\n");
         return;
     }
 
-    printf("Telephone  : ");
-    fgets(nouveau.telephone, TAILLE_TEL, stdin);
-    nouveau.telephone[strcspn(nouveau.telephone, "\n")] = '\0';
+    printf("Telephone  : "); fgets(nouveau.telephone, TAILLE_TEL, stdin); nouveau.telephone[strcspn(nouveau.telephone, "\n")] = '\0';
 
-    do
-    {
+    do {
         printf("Mot de passe : ");
         saisirMotDePasse(nouveau.motDePasse, TAILLE_MDP);
         printf("Confirmation : ");
         saisirMotDePasse(confirmation, TAILLE_MDP);
         if (strcmp(nouveau.motDePasse, confirmation) != 0)
             printf("[ERREUR] Les mots de passe ne correspondent pas.\n");
-    }
-    while (strcmp(nouveau.motDePasse, confirmation) != 0);
+    } while (strcmp(nouveau.motDePasse, confirmation) != 0);
 
     printf("1. Locataire\n2. Bailleur\nChoix : ");
     scanf("%d", &roleChoix);
@@ -234,11 +205,7 @@ void inscrireUtilisateur()
 
     if      (roleChoix == 1) nouveau.role = ROLE_LOCATAIRE;
     else if (roleChoix == 2) nouveau.role = ROLE_BAILLEUR;
-    else
-    {
-        printf("[ERREUR] Choix invalide.\n");
-        return;
-    }
+    else { printf("[ERREUR] Choix invalide.\n"); return; }
 
     nouveau.id    = genererIdUtilisateur();
     nouveau.actif = 1;
@@ -256,25 +223,20 @@ void inscrireUtilisateur()
 /**
  * @brief Connecte un utilisateur avec un maximum de 3 tentatives.
  */
-void connecterUtilisateur()
-{
+void connecterUtilisateur() {
     char email[TAILLE_EMAIL];
     char mdp[TAILLE_MDP];
     int  tentatives = 0, index;
 
     printf("\n[CONNEXION]\n");
 
-    while (tentatives < 3)
-    {
-        printf("Email          : ");
-        fgets(email, TAILLE_EMAIL, stdin);
-        email[strcspn(email, "\n")] = '\0';
+    while (tentatives < 3) {
+        printf("Email          : "); fgets(email, TAILLE_EMAIL, stdin); email[strcspn(email, "\n")] = '\0';
         printf("Mot de passe   : ");
         saisirMotDePasse(mdp, TAILLE_MDP);
 
         index = rechercherUtilisateur(email, mdp);
-        if (index != -1)
-        {
+        if (index != -1) {
             sessionCourante.connecte    = 1;
             sessionCourante.utilisateur = listeUtilisateurs[index];
             printf("[OK] Bienvenue, %s %s !\n",
@@ -290,8 +252,7 @@ void connecterUtilisateur()
 /**
  * @brief Deconnecte l'utilisateur courant et reinitialise la session.
  */
-void deconnecterUtilisateur()
-{
+void deconnecterUtilisateur() {
     printf("[OK] Au revoir, %s !\n", sessionCourante.utilisateur.prenom);
     sessionCourante.connecte = 0;
     memset(&sessionCourante.utilisateur, 0, sizeof(Utilisateur));
@@ -305,34 +266,31 @@ void deconnecterUtilisateur()
 /**
  * @brief Affiche le menu de bienvenue et orchestre l'authentification.
  */
-void menuAuthentification()
-{
+void menuAuthentification() {
     int choix;
-    do
-    {
+    do {
         printf("\n=== HABITATCAM v1.0 ===\n");
-        printf("  \n");
         printf("1. Se connecter\n");
         printf("2. Creer un compte\n");
         printf("0. Quitter\n");
         printf("Choix : ");
-        scanf("%d", &choix);
+
+        /* Verifier que la saisie est bien un nombre */
+        if (scanf("%d", &choix) != 1) {
+            printf("[ERREUR] Entrez un chiffre valide (0, 1 ou 2).\n");
+            viderBuffer();
+            choix = -1; /* Forcer le retour au menu */
+            continue;
+        }
         viderBuffer();
 
-        switch (choix)
-        {
-        case 1:
-            connecterUtilisateur();
-            break;
-        case 2:
-            inscrireUtilisateur();
-            break;
-        case 0:
-            printf("Au revoir !\n");
-            break;
-        default:
-            printf("[ERREUR] Choix invalide.\n");
+        switch (choix) {
+            case 1: connecterUtilisateur(); break;
+            case 2: inscrireUtilisateur();  break;
+            case 0: printf("Au revoir !\n"); break;
+            default:
+                printf("[ERREUR] Le choix %d n'existe pas.\n", choix);
+                printf("         Veuillez choisir 1, 2 ou 0.\n");
         }
-    }
-    while (choix != 0 && sessionCourante.connecte == 0);
+    } while (choix != 0 && sessionCourante.connecte == 0);
 }

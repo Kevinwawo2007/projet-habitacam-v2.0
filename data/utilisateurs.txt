@@ -3,3 +3,4 @@
 3|SIANI|BRUCE|sinabruce237@gmail.com|699958090|Yaounde237|2|1
 4|TOGNANG|DARYL|kevindaryl23@gmail.com|6787854789|Yaounde|2|1
 5|SIANI|BRUCE|sianibruce237@gmail.com|699958090|Yaounde237|2|1
+6|fomek|yohann|yohannfomekong@gmail.com|686195214|fomekle15|1|1

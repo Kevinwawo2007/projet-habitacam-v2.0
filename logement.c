@@ -17,6 +17,10 @@
 #include "auth.h"
 #include "logement.h"
 
+/* Variables de auth.c necessaires pour afficher le nom du bailleur */
+extern Utilisateur listeUtilisateurs[MAX_UTILISATEURS];
+extern int         nbUtilisateurs;
+
 /* ============================================================
  * VARIABLES GLOBALES
  * ============================================================ */
@@ -35,8 +39,7 @@ int nbLogements = 0;
 /**
  * @brief Vide le tampon du clavier apres un scanf().
  */
-static void viderBuffer()
-{
+static void viderBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
@@ -45,15 +48,42 @@ static void viderBuffer()
  * @brief Genere un ID unique pour un nouveau logement.
  * @return Le plus grand ID existant + 1.
  */
-int genererIdLogement()
-{
+int genererIdLogement() {
     int maxId = 0;
-    for (int i = 0; i < nbLogements; i++)
-    {
+    for (int i = 0; i < nbLogements; i++) {
         if (listeLogements[i].id > maxId)
             maxId = listeLogements[i].id;
     }
     return maxId + 1;
+}
+
+/**
+ * @brief Recherche le nom et le telephone d'un bailleur par son ID.
+ *
+ * Parcourt listeUtilisateurs[] pour trouver l'utilisateur dont l'ID
+ * correspond a idBailleur, puis copie son nom et telephone dans les
+ * tableaux fournis. Utilise dans afficherLogements() et rechercherLogement().
+ *
+ * @param idBailleur  ID du bailleur a rechercher.
+ * @param nom         Tableau ou ecrire le nom complet (prenom + nom).
+ * @param telephone   Tableau ou ecrire le numero de telephone.
+ * @note  Si le bailleur n'est pas trouve, les valeurs par defaut
+ *        "Inconnu" et "Non disponible" sont utilisees.
+ */
+static void trouverBailleur(int idBailleur, char *nom, char *telephone) {
+    strcpy(nom,       "Inconnu");
+    strcpy(telephone, "Non disponible");
+
+    for (int i = 0; i < nbUtilisateurs; i++) {
+        if (listeUtilisateurs[i].id == idBailleur) {
+            snprintf(nom, 100, "%s %s",
+                     listeUtilisateurs[i].prenom,
+                     listeUtilisateurs[i].nom);
+            strncpy(telephone, listeUtilisateurs[i].telephone, 19);
+            telephone[19] = '\0';
+            return;
+        }
+    }
 }
 
 
@@ -70,8 +100,7 @@ int genererIdLogement()
  *
  * @note Format d'une ligne : id|titre|type|ville|quartier|superficie|nbPieces|prix|statut|idBailleur
  */
-void chargerLogements()
-{
+void chargerLogements() {
     FILE *f = fopen(FICHIER_LOGEMENTS, "r");
     if (f == NULL) return; /* Pas de fichier = pas de logements, c'est normal */
 
@@ -82,8 +111,7 @@ void chargerLogements()
                   l.ville, l.quartier,
                   &l.superficie, &l.nbPieces,
                   &l.prixMensuel, (int*)&l.statut,
-                  &l.idBailleur) == 11)
-    {
+                  &l.idBailleur) == 11) {
         listeLogements[nbLogements++] = l;
         if (nbLogements >= MAX_LOGEMENTS) break;
     }
@@ -97,17 +125,14 @@ void chargerLogements()
  *
  * @note A appeler apres chaque ajout ou suppression de logement.
  */
-void sauvegarderLogements()
-{
+void sauvegarderLogements() {
     system("if not exist data mkdir data");
     FILE *f = fopen(FICHIER_LOGEMENTS, "w");
-    if (f == NULL)
-    {
+    if (f == NULL) {
         printf("[ERREUR] Impossible d'ouvrir le fichier logements.\n");
         return;
     }
-    for (int i = 0; i < nbLogements; i++)
-    {
+    for (int i = 0; i < nbLogements; i++) {
         Logement *l = &listeLogements[i];
         fprintf(f, "%d|%s|%s|%s|%s|%s|%.1f|%d|%.0f|%d|%d\n",
                 l->id, l->titre, l->type, l->description,
@@ -132,18 +157,15 @@ void sauvegarderLogements()
  *
  * @warning Accessible uniquement aux utilisateurs de role ROLE_BAILLEUR.
  */
-void ajouterLogement()
-{
+void ajouterLogement() {
 
     /* Verification du role */
-    if (sessionCourante.utilisateur.role != ROLE_BAILLEUR)
-    {
+    if (sessionCourante.utilisateur.role != ROLE_BAILLEUR) {
         printf("[ERREUR] Seul un bailleur peut ajouter un logement.\n");
         return;
     }
 
-    if (nbLogements >= MAX_LOGEMENTS)
-    {
+    if (nbLogements >= MAX_LOGEMENTS) {
         printf("[ERREUR] Nombre maximum de logements atteint.\n");
         return;
     }
@@ -152,31 +174,15 @@ void ajouterLogement()
 
     printf("\n--- AJOUTER UN LOGEMENT ---\n");
 
-    printf("Titre        : ");
-    fgets(l.titre,       TAILLE_TITRE,   stdin);
-    l.titre[strcspn(l.titre, "\n")]             = '\0';
-    printf("Type         : ");
-    fgets(l.type,        TAILLE_TYPE,    stdin);
-    l.type[strcspn(l.type, "\n")]               = '\0';
-    printf("Description  : ");
-    fgets(l.description, TAILLE_DESC,    stdin);
-    l.description[strcspn(l.description, "\n")] = '\0';
-    printf("Ville        : ");
-    fgets(l.ville,       TAILLE_VILLE,   stdin);
-    l.ville[strcspn(l.ville, "\n")]             = '\0';
-    printf("Quartier     : ");
-    fgets(l.quartier,    TAILLE_QUARTIER,stdin);
-    l.quartier[strcspn(l.quartier, "\n")]       = '\0';
+    printf("Titre        : "); fgets(l.titre,       TAILLE_TITRE,   stdin); l.titre[strcspn(l.titre, "\n")]             = '\0';
+    printf("Type         : "); fgets(l.type,        TAILLE_TYPE,    stdin); l.type[strcspn(l.type, "\n")]               = '\0';
+    printf("Description  : "); fgets(l.description, TAILLE_DESC,    stdin); l.description[strcspn(l.description, "\n")] = '\0';
+    printf("Ville        : "); fgets(l.ville,       TAILLE_VILLE,   stdin); l.ville[strcspn(l.ville, "\n")]             = '\0';
+    printf("Quartier     : "); fgets(l.quartier,    TAILLE_QUARTIER,stdin); l.quartier[strcspn(l.quartier, "\n")]       = '\0';
 
-    printf("Superficie   : ");
-    scanf("%f", &l.superficie);
-    viderBuffer();
-    printf("Nb pieces    : ");
-    scanf("%d", &l.nbPieces);
-    viderBuffer();
-    printf("Prix/mois    : ");
-    scanf("%f", &l.prixMensuel);
-    viderBuffer();
+    printf("Superficie   : "); scanf("%f", &l.superficie);  viderBuffer();
+    printf("Nb pieces    : "); scanf("%d", &l.nbPieces);    viderBuffer();
+    printf("Prix/mois    : "); scanf("%f", &l.prixMensuel); viderBuffer();
 
     /* Champs generes automatiquement */
     l.id         = genererIdLogement();
@@ -195,23 +201,26 @@ void ajouterLogement()
  * Parcourt listeLogements[] et affiche uniquement ceux dont
  * le statut est STATUT_DISPONIBLE.
  */
-void afficherLogements()
-{
+void afficherLogements() {
     printf("\n--- LOGEMENTS DISPONIBLES ---\n");
 
     int trouve = 0;
-    for (int i = 0; i < nbLogements; i++)
-    {
+    for (int i = 0; i < nbLogements; i++) {
         Logement *l = &listeLogements[i];
-        if (l->statut == STATUT_DISPONIBLE)
-        {
-            printf("\nID      : %d",    l->id);
-            printf("\nTitre   : %s",    l->titre);
-            printf("\nType    : %s",    l->type);
-            printf("\nVille   : %s - %s", l->ville, l->quartier);
-            printf("\nSurface : %.1f m2", l->superficie);
-            printf("\nPieces  : %d",    l->nbPieces);
-            printf("\nPrix    : %.0f FCFA/mois", l->prixMensuel);
+        if (l->statut == STATUT_DISPONIBLE) {
+            /* Recuperer nom et telephone du bailleur */
+            char nomBailleur[100], telBailleur[20];
+            trouverBailleur(l->idBailleur, nomBailleur, telBailleur);
+
+            printf("\nID           : %d",      l->id);
+            printf("\nTitre        : %s",      l->titre);
+            printf("\nType         : %s",      l->type);
+            printf("\nVille        : %s - %s", l->ville, l->quartier);
+            printf("\nSurface      : %.1f m2", l->superficie);
+            printf("\nPieces       : %d",      l->nbPieces);
+            printf("\nPrix         : %.0f FCFA/mois", l->prixMensuel);
+            printf("\nProprietaire : %s",      nomBailleur);
+            printf("\nTelephone    : %s",      telBailleur);
             printf("\n-----------------------------\n");
             trouve = 1;
         }
@@ -228,8 +237,7 @@ void afficherLogements()
  * minimum, ou par ville. Affiche les logements correspondants
  * parmi ceux qui sont disponibles.
  */
-void rechercherLogement()
-{
+void rechercherLogement() {
     int choix;
     printf("\n--- RECHERCHER UN LOGEMENT ---\n");
     printf("1. Par prix maximum\n");
@@ -241,66 +249,62 @@ void rechercherLogement()
 
     int trouve = 0;
 
-    if (choix == 1)
-    {
+    if (choix == 1) {
 
         float prixMax;
         printf("Prix maximum (FCFA) : ");
         scanf("%f", &prixMax);
         viderBuffer();
 
-        for (int i = 0; i < nbLogements; i++)
-        {
+        for (int i = 0; i < nbLogements; i++) {
             Logement *l = &listeLogements[i];
-            if (l->statut == STATUT_DISPONIBLE && l->prixMensuel <= prixMax)
-            {
-                printf("\nID: %d | %s | %s | %.0f FCFA\n", l->id, l->titre, l->ville, l->prixMensuel);
+            if (l->statut == STATUT_DISPONIBLE && l->prixMensuel <= prixMax) {
+                char nom1[100], tel1[20];
+                trouverBailleur(l->idBailleur, nom1, tel1);
+                printf("\nID: %d | %s | %s | %.0f FCFA | %s | %s\n",
+                       l->id, l->titre, l->ville, l->prixMensuel, nom1, tel1);
                 trouve = 1;
             }
         }
 
-    }
-    else if (choix == 2)
-    {
+    } else if (choix == 2) {
 
         float surfMin;
         printf("Superficie minimum (m2) : ");
         scanf("%f", &surfMin);
         viderBuffer();
 
-        for (int i = 0; i < nbLogements; i++)
-        {
+        for (int i = 0; i < nbLogements; i++) {
             Logement *l = &listeLogements[i];
-            if (l->statut == STATUT_DISPONIBLE && l->superficie >= surfMin)
-            {
-                printf("\nID: %d | %s | %.1f m2 | %.0f FCFA\n", l->id, l->titre, l->superficie, l->prixMensuel);
+            if (l->statut == STATUT_DISPONIBLE && l->superficie >= surfMin) {
+                char nom2[100], tel2[20];
+                trouverBailleur(l->idBailleur, nom2, tel2);
+                printf("\nID: %d | %s | %.1f m2 | %.0f FCFA | %s | %s\n",
+                       l->id, l->titre, l->superficie, l->prixMensuel, nom2, tel2);
                 trouve = 1;
             }
         }
 
-    }
-    else if (choix == 3)
-    {
+    } else if (choix == 3) {
 
         char ville[TAILLE_VILLE];
         printf("Ville : ");
         fgets(ville, TAILLE_VILLE, stdin);
         ville[strcspn(ville, "\n")] = '\0';
 
-        for (int i = 0; i < nbLogements; i++)
-        {
+        for (int i = 0; i < nbLogements; i++) {
             Logement *l = &listeLogements[i];
             if (l->statut == STATUT_DISPONIBLE &&
-                    strstr(l->ville, ville) != NULL)
-            {
-                printf("\nID: %d | %s | %s | %.0f FCFA\n", l->id, l->titre, l->ville, l->prixMensuel);
+                strstr(l->ville, ville) != NULL) {
+                char nom1[100], tel1[20];
+                trouverBailleur(l->idBailleur, nom1, tel1);
+                printf("\nID: %d | %s | %s | %.0f FCFA | %s | %s\n",
+                       l->id, l->titre, l->ville, l->prixMensuel, nom1, tel1);
                 trouve = 1;
             }
         }
 
-    }
-    else
-    {
+    } else {
         printf("[ERREUR] Choix invalide.\n");
         return;
     }
@@ -319,11 +323,9 @@ void rechercherLogement()
  * @warning Accessible uniquement au role ROLE_BAILLEUR.
  * @warning Action irreversible.
  */
-void supprimerLogement()
-{
+void supprimerLogement() {
 
-    if (sessionCourante.utilisateur.role != ROLE_BAILLEUR)
-    {
+    if (sessionCourante.utilisateur.role != ROLE_BAILLEUR) {
         printf("[ERREUR] Seul un bailleur peut supprimer ses logements.\n");
         return;
     }
@@ -335,14 +337,11 @@ void supprimerLogement()
     scanf("%d", &id);
     viderBuffer();
 
-    for (int i = 0; i < nbLogements; i++)
-    {
-        if (listeLogements[i].id == id)
-        {
+    for (int i = 0; i < nbLogements; i++) {
+        if (listeLogements[i].id == id) {
 
             /* Verification que le logement appartient au bailleur connecte */
-            if (listeLogements[i].idBailleur != sessionCourante.utilisateur.id)
-            {
+            if (listeLogements[i].idBailleur != sessionCourante.utilisateur.id) {
                 printf("[ERREUR] Ce logement ne vous appartient pas.\n");
                 return;
             }
