@@ -58,10 +58,13 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+<<<<<<< HEAD
 		<Unit filename="matching.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="matching.h" />
+=======
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

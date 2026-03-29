@@ -209,7 +209,11 @@
 	"structures.h"
 	"auth.h"
 
+<<<<<<< HEAD
 1774748093 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\administrateur.c
+=======
+1774652344 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\administrateur.c
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -219,14 +223,22 @@
 
 1774652344 e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\structures.h
 
+<<<<<<< HEAD
 1774748094 e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\auth.h
+=======
+1773622670 e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\auth.h
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 	"structures.h"
 
 1774652344 e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\administrateur.h
 	"structures.h"
 	"auth.h"
 
+<<<<<<< HEAD
 1774748093 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\auth.c
+=======
+1774652344 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\auth.c
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -237,7 +249,11 @@
 	"structures.h"
 	"auth.h"
 
+<<<<<<< HEAD
 1774748094 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\bailleur.c
+=======
+1774652344 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\bailleur.c
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 	<stdio.h>
 	<string.h>
 	"structures.h"
@@ -251,7 +267,11 @@
 1772406942 e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\bailleur.h
 	"structures.h"
 
+<<<<<<< HEAD
 1774749260 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\locataire.c
+=======
+1774652344 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\locataire.c
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -259,7 +279,10 @@
 	"auth.h"
 	"logement.h"
 	"locataire.h"
+<<<<<<< HEAD
 	"matching.h"
+=======
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 
 1772406031 e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\locataire.h
 	"structures.h"
@@ -272,7 +295,11 @@
 	"auth.h"
 	"logement.h"
 
+<<<<<<< HEAD
 1774749260 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\main.c
+=======
+1774652344 source:e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\main.c
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 	<stdio.h>
 	"structures.h"
 	"auth.h"
@@ -280,6 +307,7 @@
 	"locataire.h"
 	"bailleur.h"
 	"administrateur.h"
+<<<<<<< HEAD
 	"matching.h"
 
 1774749356 e:\nouveau dossier\projet habitacam  v2.0\habitatcamv2.0\matching.h
@@ -294,4 +322,6 @@
 	"logement.h"
 	"matching.h"
 	<sys/stat.h>
+=======
+>>>>>>> aa7cf80d5abb2a6e192b2d15b929a293523bfa36
 
