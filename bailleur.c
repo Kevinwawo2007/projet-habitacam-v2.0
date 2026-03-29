@@ -28,17 +28,13 @@ extern int         nbReservations;
  *
  * @return L'entier saisi, ou -99 si la saisie est invalide.
  */
-static int saisirEntier()
-{
+static int saisirEntier() {
     int val;
-    if (scanf("%d", &val) != 1)
-    {
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
+    if (scanf("%d", &val) != 1) {
+        int c; while ((c = getchar()) != '\n' && c != EOF);
         return -99; /* Code d'erreur : saisie invalide */
     }
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    int c; while ((c = getchar()) != '\n' && c != EOF);
     return val;
 }
 
@@ -49,30 +45,20 @@ static int saisirEntier()
  * Parcourt listeLogements[] et affiche uniquement les logements
  * dont idBailleur correspond a l'ID de l'utilisateur en session.
  */
-static void voirMesAnnonces()
-{
+static void voirMesAnnonces() {
     int idBailleur = sessionCourante.utilisateur.id;
     int trouve = 0;
 
     printf("\n--- MES ANNONCES ---\n");
-    for (int i = 0; i < nbLogements; i++)
-    {
+    for (int i = 0; i < nbLogements; i++) {
         Logement *l = &listeLogements[i];
-        if (l->idBailleur == idBailleur)
-        {
+        if (l->idBailleur == idBailleur) {
             printf("ID: %d | %s | %s | %.0f FCFA | ",
                    l->id, l->titre, l->ville, l->prixMensuel);
-            switch (l->statut)
-            {
-            case STATUT_DISPONIBLE:
-                printf("Disponible\n");
-                break;
-            case STATUT_RESERVE:
-                printf("Reserve\n");
-                break;
-            case STATUT_INDISPONIBLE:
-                printf("Indisponible\n");
-                break;
+            switch (l->statut) {
+                case STATUT_DISPONIBLE:   printf("Disponible\n");   break;
+                case STATUT_RESERVE:      printf("Reserve\n");      break;
+                case STATUT_INDISPONIBLE: printf("Indisponible\n"); break;
             }
             trouve = 1;
         }
@@ -87,23 +73,19 @@ static void voirMesAnnonces()
  * Parcourt listeReservations[] et affiche celles dont le logement
  * appartient au bailleur connecte et dont le statut est RES_EN_ATTENTE.
  */
-static void voirMesReservations()
-{
+static void voirMesReservations() {
     int idBailleur = sessionCourante.utilisateur.id;
     int trouve = 0;
 
     printf("\n--- MES RESERVATIONS EN ATTENTE ---\n");
-    for (int i = 0; i < nbReservations; i++)
-    {
+    for (int i = 0; i < nbReservations; i++) {
         Reservation *r = &listeReservations[i];
 
         /* Trouver le logement correspondant */
-        for (int j = 0; j < nbLogements; j++)
-        {
+        for (int j = 0; j < nbLogements; j++) {
             if (listeLogements[j].id == r->idLogement &&
-                    listeLogements[j].idBailleur == idBailleur &&
-                    r->statut == RES_EN_ATTENTE)
-            {
+                listeLogements[j].idBailleur == idBailleur &&
+                r->statut == RES_EN_ATTENTE) {
 
                 printf("Reservation ID: %d | Logement: %s | Date: %s\n",
                        r->id, listeLogements[j].titre, r->dateReservation);
@@ -123,58 +105,40 @@ static void voirMesReservations()
  *
  * @warning Accessible uniquement au role ROLE_BAILLEUR.
  */
-void menuBailleur()
-{
-    if (sessionCourante.utilisateur.role != ROLE_BAILLEUR)
-    {
+void menuBailleur() {
+    if (sessionCourante.utilisateur.role != ROLE_BAILLEUR) {
         printf("[ACCES REFUSE] Section reservee aux bailleurs.\n");
         return;
     }
 
     int choix;
-    do
-    {
+    do {
         printf("\n=== MENU BAILLEUR ===\n");
         printf("Connecte : %s\n", sessionCourante.utilisateur.prenom);
         printf("1. Ajouter une annonce\n");
         printf("2. Voir mes annonces\n");
         printf("3. Supprimer une annonce\n");
         printf("4. Voir mes reservations\n");
-        printf("5. Changer mon mot de passe\n");
+        printf("5. Personnalisation du profil\n");
         printf("0. Se deconnecter\n");
         printf("Choix : ");
         choix = saisirEntier();
 
-        if (choix == -99)
-        {
+        if (choix == -99) {
             printf("[ERREUR] Entrez un chiffre valide (0 a 5).\n");
             continue;
         }
 
-        switch (choix)
-        {
-        case 1:
-            ajouterLogement();
-            break;
-        case 2:
-            voirMesAnnonces();
-            break;
-        case 3:
-            supprimerLogement();
-            break;
-        case 4:
-            voirMesReservations();
-            break;
-        case 5:
-            changerMotDePasse();
-            break;
-        case 0:
-            deconnecterUtilisateur();
-            break;
-        default:
-            printf("[ERREUR] Le choix %d n'existe pas.\n", choix);
-            printf("         Veuillez choisir entre 0 et 5.\n");
+        switch (choix) {
+            case 1: ajouterLogement();        break;
+            case 2: voirMesAnnonces();        break;
+            case 3: supprimerLogement();      break;
+            case 4: voirMesReservations();    break;
+            case 5: menuPersonnalisation();   break;
+            case 0: deconnecterUtilisateur(); break;
+            default:
+                printf("[ERREUR] Le choix %d n'existe pas.\n", choix);
+                printf("         Veuillez choisir entre 0 et 5.\n");
         }
-    }
-    while (choix != 0 && sessionCourante.connecte);
+    } while (choix != 0 && sessionCourante.connecte);
 }

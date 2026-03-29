@@ -1,7 +1,7 @@
 /* ============================================================
  * @file    main.c
- * @brief   Point d'entree principal de HabitatCam V1.0
- * @version 1.0
+ * @brief   Point d'entree principal de HabitatCam V2.0
+ * @version 2.0
  * @author  CHEDJOU
  * ============================================================ */
 
@@ -12,34 +12,35 @@
 #include "locataire.h"
 #include "bailleur.h"
 #include "administrateur.h"
+#include "matching.h"
+#include "favoris.h"
 
 /**
- * @brief Redirige l'utilisateur connecte vers son menu selon son role.
+ * @brief Redirige vers le bon menu selon le role connecte.
  */
-static void lancerMenuRole()
-{
-    switch (sessionCourante.utilisateur.role)
-    {
-    case ROLE_LOCATAIRE:
-        menuLocataire();
-        break;
-    case ROLE_BAILLEUR:
-        menuBailleur();
-        break;
-    case ROLE_ADMINISTRATEUR:
-        menuAdministrateur();
-        break;
-    default:
-        printf("[ERREUR] Role inconnu.\n");
+static void lancerMenuRole() {
+    switch (sessionCourante.utilisateur.role) {
+        case ROLE_LOCATAIRE:
+            /* Afficher les recommandations a la connexion */
+            afficherRecommandations(sessionCourante.utilisateur.id);
+            verifierAlertesFavoris(sessionCourante.utilisateur.id);
+            menuLocataire();
+            break;
+        case ROLE_BAILLEUR:
+            menuBailleur();
+            break;
+        case ROLE_ADMINISTRATEUR:
+            menuAdministrateur();
+            break;
+        default:
+            printf("[ERREUR] Role inconnu.\n");
     }
 }
 
 /**
- * @brief Fonction principale - point d'entree du programme.
- * @return 0 si le programme se termine normalement.
+ * @brief Point d'entree du programme.
  */
-int main()
-{
+int main() {
 
     printf("============================================\n");
     printf("   HABITATCAM - Plateforme de logement     \n");
@@ -53,17 +54,11 @@ int main()
 
     /* Boucle principale */
     int continuer = 1;
-    while (continuer)
-    {
-
+    while (continuer) {
         menuAuthentification();
-
-        if (sessionCourante.connecte)
-        {
+        if (sessionCourante.connecte) {
             lancerMenuRole();
-        }
-        else
-        {
+        } else {
             continuer = 0;
         }
     }

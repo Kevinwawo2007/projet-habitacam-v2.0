@@ -152,6 +152,16 @@ AuthStatus motDePasseOublie(const char *email);
 AuthStatus changerMotDePasse();
 
 /**
+ * @brief Permet a l'admin de changer son email de connexion.
+ *
+ * L'admin peut modifier l'email par defaut (admin@habitatcam.cm)
+ * depuis son panneau. Verifie que le nouvel email n'est pas pris.
+ *
+ * @return AUTH_OK si succes, AUTH_ERR_EXISTS si email deja utilise.
+ */
+AuthStatus changerEmailAdmin();
+
+/**
  * @brief Met a jour le code secret admin dans admin_config.txt.
  *
  * Verifie l'ancien code avant d'autoriser le changement.
@@ -164,6 +174,25 @@ AuthStatus changerMotDePasse();
  *         AUTH_ERR_IO si probleme d'ecriture fichier.
  */
 AuthStatus modifierCodeSecret();
+
+/* ============================================================
+ * PERSONNALISATION DU PROFIL
+ * ============================================================ */
+
+/**
+ * @brief Affiche le menu de personnalisation du profil.
+ *
+ * Regroupe en un sous-menu toutes les operations de modification
+ * du profil de l'utilisateur connecte :
+ *   1. Changer nom et prenom
+ *   2. Changer numero de telephone
+ *   3. Changer mot de passe
+ *   4. Changer email de connexion
+ *   5. Modifier le code secret (admin uniquement)
+ *
+ * Accessible depuis le menu de chaque role.
+ */
+void menuPersonnalisation();
 
 /* ============================================================
  * FONCTIONS UTILITAIRES
