@@ -25,8 +25,9 @@
  * UTILITAIRES INTERNES
  * ============================================================ */
 
-/**
- * @brief Cree le dossier data/ si absent � cross-platform.
+ * @brief Cree le dossier data/ si absent â€” cross-platform.
+=======
+ * @brief Cree le dossier data/ si absent — cross-platform.
  */
 #ifndef _WIN32
 #include <sys/stat.h>
