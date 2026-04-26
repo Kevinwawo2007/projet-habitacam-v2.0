@@ -375,7 +375,8 @@ static LRESULT CALLBACK procDlgAdmin(HWND hwnd, UINT msg,
                 (HMENU)905, GetModuleHandle(NULL), NULL);
             SendMessage(hok, WM_SETFONT, (WPARAM)f, TRUE);
             SendMessage(han, WM_SETFONT, (WPARAM)f, TRUE);
-            (void)hl; (void)he; (void)hok; (void)han;
+            /* Mettre le focus sur le champ de saisie */
+            SetFocus(he);
 
             /* Centrer sur la fenetre principale */
             RECT rp; GetWindowRect(hWnd, &rp);
@@ -384,8 +385,20 @@ static LRESULT CALLBACK procDlgAdmin(HWND hwnd, UINT msg,
                 rp.left + (rp.right  - rp.left - dw) / 2,
                 rp.top  + (rp.bottom - rp.top  - dh) / 2,
                 dw, dh, SWP_NOSIZE);
+
+            /* Stocker le handle du champ pour y acceder facilement */
+            SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)he);
+            (void)hl; (void)hok; (void)han;
             return 0;
         }
+
+        case WM_KEYDOWN:
+            /* Touche Entree = Valider */
+            if ((int)wParam == VK_RETURN) {
+                SendMessage(hwnd, WM_COMMAND,
+                            MAKEWPARAM(904, BN_CLICKED), 0);
+            }
+            return 0;
 
         case WM_COMMAND: {
             int id = (int)LOWORD(wParam);
@@ -406,21 +419,54 @@ static LRESULT CALLBACK procDlgAdmin(HWND hwnd, UINT msg,
                 }
 
                 if (etapeAdmin == 0) {
-                    /* Lire le code secret depuis data/admin_config.txt */
-                    char codeSecret[64] = "HABITAT2025";
+                    /* Lire le code secret depuis data/admin_config.txt.
+                     * Si le fichier est absent, le code par defaut
+                     * est HABITAT2025 (cree automatiquement). */
+                    char codeSecret[64];
+                    memset(codeSecret, 0, sizeof(codeSecret));
+                    strcpy(codeSecret, "HABITAT2025");
+
                     FILE *fcs = fopen("data/admin_config.txt", "r");
-                    if (fcs) {
-                        char ligne[128];
-                        while (fgets(ligne, sizeof(ligne), fcs)) {
-                            ligne[strcspn(ligne, "\r\n")] = 0;
-                            if (strncmp(ligne, "CODE_SECRET=", 12) == 0) {
-                                strncpy(codeSecret, ligne + 12,
+                    if (fcs != NULL) {
+                        char cligneCS[128];
+                        int  i, lenCS;
+                        while (fgets(cligneCS, sizeof(cligneCS), fcs)) {
+                            lenCS = (int)strlen(cligneCS);
+                            /* Supprimer les \r et \n en fin de ligne */
+                            for (i = lenCS - 1; i >= 0; i--) {
+                                if (cligneCS[i] == '\r' ||
+                                    cligneCS[i] == '\n')
+                                    cligneCS[i] = '\0';
+                                else break;
+                            }
+                            if (strncmp(cligneCS, "CODE_SECRET=", 12) == 0) {
+                                strncpy(codeSecret, cligneCS + 12,
                                         sizeof(codeSecret) - 1);
+                                codeSecret[sizeof(codeSecret)-1] = '\0';
                                 break;
                             }
                         }
                         fclose(fcs);
+                    } else {
+                        /* Fichier absent : creer le dossier et le fichier */
+                        CreateDirectory("data", NULL);
+                        FILE *fcw = fopen("data/admin_config.txt", "w");
+                        if (fcw) {
+                            fputs("CODE_SECRET=HABITAT2025\n", fcw);
+                            fclose(fcw);
+                        }
                     }
+
+                    /* Supprimer espaces et tabulations en fin */
+                    {
+                        int lenCS2 = (int)strlen(codeSecret);
+                        while (lenCS2 > 0 &&
+                               (codeSecret[lenCS2-1] == ' ' ||
+                                codeSecret[lenCS2-1] == '\t')) {
+                            codeSecret[--lenCS2] = '\0';
+                        }
+                    }
+
                     if (strcmp(saisi, codeSecret) != 0) {
                         MessageBox(hwnd, "Code incorrect.",
                                    "Erreur", MB_OK | MB_ICONERROR);
